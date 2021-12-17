@@ -1,4 +1,29 @@
 
+def initialInfo():
+
+    a = {1,2,3,4}
+    b = ["Computational Science", "Computer Networks", "Computer Security", "Foundations", "Software Development"]
+
+    print("Welcome to the CIS Degree Scheduler! This program will show you which classes you need for your major, as "
+          "well as plan out what you should take in the upcoming years.")
+    name = input("Please enter your name: ")
+    print(f'Welcome, {name}!')
+    while True:
+        year = input("Please enter your grade (1 for FR, 2 for SO, 3 for J, 4 for SR): ")
+        try:
+            yearNum = int(year)
+            if yearNum in a:
+                while True:
+                    Concentration = input("Now please enter your concentration (Computational Science,"
+                    " Computer Networks, Computer Security, Foundations, Software Development,)")
+                    if Concentration in b:
+                        break
+                    print("This is not a valid concentration.")
+                return yearNum, Concentration
+            print("Not a valid year! Enter 1 for FR, 2 for SO, 3 for J, 4 for SR.")
+        except ValueError:
+                print("Please enter an integer! Enter 1 for FR, 2 for SO, 3 for J, 4 for SR.")
+
 
 def addClasses(unrepeatable, repeatable, name):
 
@@ -58,16 +83,14 @@ def DegreeProgressElectives(classes, repeatableClasses, creditSum, list):
     lowerDivCredit = 0
     upperDivCredit = 0
 
-    for j in repeatableClasses:
-        if (repeatableClasses[j][1]) and (j == 410):
-            upperDivCredit += 4*repeatableClasses[j][1]
-        elif repeatableClasses[j][1]:
-            if j == 399:
-                lowerDivCredit += 4 * repeatableClasses[j][1]
-            elif j == 407:
-                lowerDivCredit += 2 * repeatableClasses[j][1]
-            if lowerDivCredit >= 8:
-                lowerDivCredit = 8
+    if (repeatableClasses[410][1]):
+        upperDivCredit += 4 * repeatableClasses[410][1]
+    elif repeatableClasses[399][1]:
+        lowerDivCredit += 4 * repeatableClasses[399][1]
+    elif repeatableClasses[407][1]:
+        lowerDivCredit += 2 * repeatableClasses[407][1]
+    if lowerDivCredit >= 8:
+        lowerDivCredit = 8
 
 
     for i in classes:
@@ -76,13 +99,14 @@ def DegreeProgressElectives(classes, repeatableClasses, creditSum, list):
             upperDivCredit += 4
         elif (classes[i][1]) and (courseLevel == 3):
             lowerDivCredit += 4
+
             if lowerDivCredit >= 8:
                 lowerDivCredit = 8
 
     creditSum = creditSum + lowerDivCredit + upperDivCredit
 
-    print(f'Lower Division Elective Credits:{lowerDivCredit}')
-    print(f'Upper Division Elective Credits: {upperDivCredit}')
+    print(f'Lower Division Elective Credits Earned:{lowerDivCredit}')
+    print(f'Upper Division Elective Credits Earned: {upperDivCredit}')
     print(f'Total Elective Credits Earned: {creditSum}')
 
 
@@ -96,22 +120,15 @@ def refactorClasses(classes):
 
     for i in classes:
 
-        if (classes[i][1] > 2) and (i == 399):
+        if (classes[i][1] > 2) and (i != 410):
             print(
                 f'\nNote: Only 2 classes of CIS {i} will count towards degree requirements for a total of 8 credits.\n'
                 f'You have enrolled in {classes[i][1]} courses of CIS {i}.\n'
                 f'The excess {classes[i][1] - 2} courses will not count toward degree requirements.\n')
             classes[i][1] = 2
 
-        elif (classes[i][1] > 2) and (i == 407):
-            print(
-                f'\nNote: Only 2 classes of CIS {i} will count towards degree requirements for a total of 4 credits.\n'
-                f'You have enrolled in {classes[i][1]} courses of CIS {i}.\n'
-                f'The excess {classes[i][1] - 2} courses will not count toward degree requirements.\n')
-            classes[i][1] = 2
 
-
-def lowerDivisionRequirements(classes):
+def missingClassRequirements(classes):
 
     for i in classes:
         if classes[i][1] == 0:
@@ -129,7 +146,13 @@ def prereqs():
     pass
 
 def paths():
+    # Computational Science {423, 413, 420, 427, 455, 461}
+    # Computer Networks {432, 413, 429, 433, 445, 473}
+    # Computer Security {433, 432, 472, 490}
+    # Foundations {any,any,any}
+    # Software Development {423, 413, 420, 427, 455, 461}
     pass
+
 
 def main():
 
@@ -153,16 +176,25 @@ def main():
                   372 : ['Machine Learning for Data Science', 0],
                   413 : ['Advanced Data Structures', 0],
                   420 : ['Automata Theory', 0], 423 : ['Software Methodologies II', 0],
+                  427 : ['Introduction to Logic', 0],
+                  429 : ['Computer Architecture', 0],
                   431 : ['Introduction to Parallel Computing', 0],
                   432 : ['Intro to Computer Networks', 0],
                   433 : ['Computer & Network Security', 0],
                   434 : ['Computer and Network Security II', 0],
                   436 : ['Secure Software Development', 0],
                   443 : ['User Interfaces', 0],
+                  445 : ['Modeling and Simulation',0],
                   451 : ['Database Processing', 0],
+                  452 : ['Database Issues', 0],
+                  453 : ['Data Mining', 0],
+                  454 : ['Bioinformatics', 0],
+                  455 : ['Computational Science', 0],
                   461 : ['Introduction to Compilers', 0],
                   471 : ['Introduction to Artificial Intelligence', 0],
-                  472 : ['Machine Learning', 0]
+                  472 : ['Machine Learning', 0],
+                  473 : ['Probabilistic Methods', 0],
+                  490 : ['Computer Ethics', 0],
                   }
 
     repeatable = { 399 : ['Various Lower Division Electives', 0],
@@ -193,35 +225,40 @@ def main():
     requirementList = [False, False, False]
     totalCreditSum = 0
 
+    grade, concentration = initialInfo()
+    print(grade)
+    print(concentration)
+
     addClasses(lowerDiv, {}, 'lower division')
 
     DegreeProgressCore(lowerDiv, requirementList, 'Lower Division', 0)
 
-    if requirementList[0]:
-        addClasses(upperDiv, {}, 'upper division')
-
-        DegreeProgressCore(upperDiv, requirementList, 'Upper Division', 1)
-
-        addClasses(electives, repeatable, 'elective')
-        refactorClasses(repeatable)
-
-        DegreeProgressElectives(electives, repeatable, totalCreditSum, requirementList)
-
-        degreeCompletion(requirementList)
-
-
-    else:
+    if not requirementList[0]:
         print("You have not completed all the required lower division courses yet.")
         print("Your remaining required Core classes are:")
-        lowerDivisionRequirements(lowerDiv)
-        lowerDivisionRequirements(upperDiv)
+        missingClassRequirements(lowerDiv)
+        missingClassRequirements(upperDiv)
+        return
 
 
-    print(lowerDiv)
-    print(upperDiv)
-    print(electives)
-    print(repeatable)
-    print(requirementList)
+    addClasses(upperDiv, {}, 'upper division')
+
+    DegreeProgressCore(upperDiv, requirementList, 'Upper Division', 1)
+
+    addClasses(electives, repeatable, 'elective')
+    refactorClasses(repeatable)
+
+    DegreeProgressElectives(electives, repeatable, totalCreditSum, requirementList)
+
+    degreeCompletion(requirementList)
+
+
+
+    #print(lowerDiv)
+    #print(upperDiv)
+    #print(electives)
+    #print(repeatable)
+    #print(requirementList)
 
 
 if __name__ == "__main__":
