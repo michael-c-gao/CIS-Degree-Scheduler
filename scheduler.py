@@ -1,6 +1,7 @@
 
 
 def addClasses(unrepeatable, repeatable, name):
+
     print('----------------------------------------------------------------------------------------------')
     print(f'\nAll possible {name} CIS courses:')
     print('_____________________________________________')
@@ -46,19 +47,89 @@ def addClasses(unrepeatable, repeatable, name):
 
 
 def DegreeProgressCore(classes, list, name, index):
+
     if all(value[1] == 1 for value in classes.values()):
         list[index] = True
         print(f'{name} courses completed')
 
-def DegreeProgressElectives(classes, list, name, index):
 
-    #requires 20 total elective credits
-    pass
+def DegreeProgressElectives(classes, repeatableClasses, creditSum, list):
+
+    lowerDivCredit = 0
+    upperDivCredit = 0
+
+    for j in repeatableClasses:
+        if (repeatableClasses[j][1]) and (j == 410):
+            upperDivCredit += 4*repeatableClasses[j][1]
+        elif repeatableClasses[j][1]:
+            if j == 399:
+                lowerDivCredit += 4 * repeatableClasses[j][1]
+            elif j == 407:
+                lowerDivCredit += 2 * repeatableClasses[j][1]
+            if lowerDivCredit >= 8:
+                lowerDivCredit = 8
+
+
+    for i in classes:
+        courseLevel = (i // 100)
+        if (classes[i][1]) and (courseLevel == 4):
+            upperDivCredit += 4
+        elif (classes[i][1]) and (courseLevel == 3):
+            lowerDivCredit += 4
+            if lowerDivCredit >= 8:
+                lowerDivCredit = 8
+
+    creditSum = creditSum + lowerDivCredit + upperDivCredit
+
+    print(f'Lower Division Elective Credits:{lowerDivCredit}')
+    print(f'Upper Division Elective Credits: {upperDivCredit}')
+    print(f'Total Elective Credits Earned: {creditSum}')
+
+
+    if ((upperDivCredit + lowerDivCredit) >= 20):
+        list[2] = True
+        print('All elective requirements satisfied.')
+
+
+
+def refactorClasses(classes):
+
+    for i in classes:
+
+        if (classes[i][1] > 2) and (i == 399):
+            print(
+                f'\nNote: Only 2 classes of CIS {i} will count towards degree requirements for a total of 8 credits.\n'
+                f'You have enrolled in {classes[i][1]} courses of CIS {i}.\n'
+                f'The excess {classes[i][1] - 2} courses will not count toward degree requirements.\n')
+            classes[i][1] = 2
+
+        elif (classes[i][1] > 2) and (i == 407):
+            print(
+                f'\nNote: Only 2 classes of CIS {i} will count towards degree requirements for a total of 4 credits.\n'
+                f'You have enrolled in {classes[i][1]} courses of CIS {i}.\n'
+                f'The excess {classes[i][1] - 2} courses will not count toward degree requirements.\n')
+            classes[i][1] = 2
+
+
+def lowerDivisionRequirements(classes):
+
+    for i in classes:
+        if classes[i][1] == 0:
+            print(f'|{i}| {classes[i][0]}')
+
+def degreeCompletion(array):
+
+    setlist = set(array)
+    setLength = len(setlist)
+    if setLength == 1 and setlist.pop() is True:
+        print("\nCongratulations! You have successfully satisfied all CIS degree requirements!\n")
 
 
 def prereqs():
     pass
 
+def paths():
+    pass
 
 def main():
 
@@ -120,21 +191,30 @@ def main():
                }
 
     requirementList = [False, False, False]
+    totalCreditSum = 0
 
     addClasses(lowerDiv, {}, 'lower division')
 
     DegreeProgressCore(lowerDiv, requirementList, 'Lower Division', 0)
 
-    addClasses(upperDiv, {}, 'upper division')
+    if requirementList[0]:
+        addClasses(upperDiv, {}, 'upper division')
 
-    DegreeProgressCore(upperDiv, requirementList, 'Upper Division', 1)
+        DegreeProgressCore(upperDiv, requirementList, 'Upper Division', 1)
 
-    addClasses(electives, repeatable, 'elective')
+        addClasses(electives, repeatable, 'elective')
+        refactorClasses(repeatable)
 
-    DegreeProgressElectives(electives, requirementList, 'Electives', 2)
+        DegreeProgressElectives(electives, repeatable, totalCreditSum, requirementList)
+
+        degreeCompletion(requirementList)
 
 
-
+    else:
+        print("You have not completed all the required lower division courses yet.")
+        print("Your remaining required Core classes are:")
+        lowerDivisionRequirements(lowerDiv)
+        lowerDivisionRequirements(upperDiv)
 
 
     print(lowerDiv)
