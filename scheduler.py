@@ -8,6 +8,10 @@ def addClasses(unrepeatable, repeatable, name):
     for i in unrepeatable:
         print(f'|{i}| {unrepeatable[i][0]}')
 
+    if repeatable:
+        for i in repeatable:
+            print(f'|{i}| {repeatable[i][0]}')
+
     print('_____________________________________________\n')
     print(f'Please enter all the  {name} CIS courses you have taken (i.e. Enter 415 for CIS 415).')
     print(f'Once you have finished entering classes, enter Done to progress.\n')
@@ -36,16 +40,20 @@ def addClasses(unrepeatable, repeatable, name):
             else:
                 print('You have already added this course!')
 
-
         except ValueError:
             if userInput != 'Done':
                 print("Not a valid course number!")
 
 
-def DegreeProgress(classes, list, name):
-    if all(value1[1] == 1 for value1 in classes.values()):
-        list[0] = True
+def DegreeProgressCore(classes, list, name, index):
+    if all(value[1] == 1 for value in classes.values()):
+        list[index] = True
         print(f'{name} courses completed')
+
+def DegreeProgressElectives(classes, list, name, index):
+
+    #requires 20 total elective credits
+    pass
 
 
 def prereqs():
@@ -88,25 +96,53 @@ def main():
 
     repeatable = { 399 : ['Various Lower Division Electives', 0],
                    407 : ['Various Seminars', 0],
-                   410 : ['Various Lower Division Electives', 0] }
+                   410 : ['Various Upper Division Electives', 0]
+                   }
+
+    prereq = { 315 : {313},
+               330 : {314},
+               415 : {313, 330},
+               425: {315},
+               413 : {315},
+               420 : {315},
+               422 : {313},
+               423 : {422},
+               431 : {330},
+               432 : {330},
+               433 : {415},
+               434 : {432, 433},
+               436 : {330},
+               443 : {313},
+               451 : {313,314},
+               461 : {314, 425},
+               471 : {315},
+               472 : {315}
+               }
 
     requirementList = [False, False, False]
 
     addClasses(lowerDiv, {}, 'lower division')
 
+    DegreeProgressCore(lowerDiv, requirementList, 'Lower Division', 0)
+
     addClasses(upperDiv, {}, 'upper division')
+
+    DegreeProgressCore(upperDiv, requirementList, 'Upper Division', 1)
 
     addClasses(electives, repeatable, 'elective')
 
-    DegreeProgress(lowerDiv, requirementList, 'Lower Division')
-    DegreeProgress(upperDiv, requirementList,  'Upper Division')
+    DegreeProgressElectives(electives, requirementList, 'Electives', 2)
+
+
+
 
 
     print(lowerDiv)
     print(upperDiv)
     print(electives)
     print(repeatable)
-    print(DegreeProgress)
+    print(requirementList)
+
 
 if __name__ == "__main__":
     main()
