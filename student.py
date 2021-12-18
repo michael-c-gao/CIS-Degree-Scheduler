@@ -221,18 +221,18 @@ class Student:
         SoftwareDevelopment = {423 : 1, 413 : 2, 420 : 2, 427 : 2, 455 : 2, 461 : 2}
         print('E')
 
+    def Concentration(self):
 
-    def paths(self):
-        if self.concentration == 'Foundations':
-            self.A()
-        elif self.concentration == 'Computer Networks':
-            self.B()
-        elif self.concentration == 'Computer Security':
-            self.C()
-        elif self.concentration == 'Foundations':
-            self.D()
-        elif self.concentration == 'Software Development':
-            self.E()
+        switch = {
+            'Computational Science': self.A,
+            'Computer Networks' : self.B,
+            'Computer Security' : self.C,
+            'Foundations' : self.D,
+            'Software Development' : self.E
+        }
+
+        switch.get(self.concentration)()
+
 
     def prereqs(self):
         pass

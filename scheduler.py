@@ -56,7 +56,8 @@ def main():
 
     name, grade, concentration = initialInfo()
     stud = Student(name, grade, concentration)
-    stud.paths()
+    stud.Concentration()
+
     stud.addClasses(LowerDiv)
 
     stud.DegreeProgressCore(LowerDiv)
