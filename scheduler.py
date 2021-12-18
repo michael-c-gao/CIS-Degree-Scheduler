@@ -1,4 +1,3 @@
-
 from student import *
 
 def initialInfo():
@@ -21,23 +20,11 @@ def initialInfo():
                     if Concentration in b:
                         break
                     print("This is not a valid concentration.")
-                print(name, yearNum, Concentration)
                 return name, yearNum, Concentration
             print("Not a valid year! Enter 1 for FR, 2 for SO, 3 for J, 4 for SR.")
         except ValueError:
                 print("Please enter an integer! Enter 1 for FR, 2 for SO, 3 for J, 4 for SR.")
 
-
-def prereqs():
-    pass
-
-def paths():
-    # Computational Science {423, 413, 420, 427, 455, 461}
-    # Computer Networks {432, 413, 429, 433, 445, 473}
-    # Computer Security {433, 432, 472, 490}
-    # Foundations {any,any,any}
-    # Software Development {423, 413, 420, 427, 455, 461}
-    pass
 
 
 def main():
@@ -69,8 +56,9 @@ def main():
 
     name, grade, concentration = initialInfo()
     stud = Student(name, grade, concentration)
-
+    stud.paths()
     stud.addClasses(LowerDiv)
+
     stud.DegreeProgressCore(LowerDiv)
 
     stud.addClasses(UpperDiv)
@@ -81,6 +69,7 @@ def main():
     stud.DegreeProgressElectives()
 
     stud.degreeCompletion()
+
 
 
 if __name__ == "__main__":

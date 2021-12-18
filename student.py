@@ -103,7 +103,6 @@ class Student:
 
             try:
                 courseNum = int(userInput)
-                print(courseNum)
                 if courseNum in self.array[index] and self.array[index][courseNum][1] == 0:
                     self.array[index][courseNum][1] += 1
 
@@ -202,5 +201,38 @@ class Student:
             print("\nCongratulations! You have successfully satisfied all CIS degree requirements!\n")
 
 
+    def A(self):
+        ComputationalScience = {423 : 1 , 413: 2, 420: 2, 427: 2, 455: 2, 461: 2}
+        print('A')
+
+    def B(self):
+        ComputerNetworks = {432 : 1, 413 : 2, 429 : 2, 433 : 2, 445 : 2, 473 : 2}
+        print('B')
+
+    def C(self):
+        ComputerSecurity = {433 : 1, 432 : 2, 472 : 2, 490 : 2}
+        print('C')
+
+    def D(self):
+        # Foundations {any,any,any}
+        print('D')
+
+    def E(self):
+        SoftwareDevelopment = {423 : 1, 413 : 2, 420 : 2, 427 : 2, 455 : 2, 461 : 2}
+        print('E')
 
 
+    def paths(self):
+        if self.concentration == 'Foundations':
+            self.A()
+        elif self.concentration == 'Computer Networks':
+            self.B()
+        elif self.concentration == 'Computer Security':
+            self.C()
+        elif self.concentration == 'Foundations':
+            self.D()
+        elif self.concentration == 'Software Development':
+            self.E()
+
+    def prereqs(self):
+        pass
