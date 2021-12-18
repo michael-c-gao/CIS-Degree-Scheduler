@@ -158,39 +158,6 @@ class Student:
                     f'You have enrolled in {self.repeatable[i][1]} courses of CIS {i}.\n'
                     f'The excess {self.repeatable[i][1] - 2} courses will not count toward degree requirements.\n')
                 self.repeatable[i][1] = 2
-        print(self.repeatable)
-
-
-    def DegreeProgressElectives(self):
-
-        if (self.repeatable[410][1]):
-            self.upperDivCredit += 4 * self.repeatable[410][1]
-        elif self.repeatable[399][1]:
-            self.lowerDivCredit += 4 * self.repeatable[399][1]
-        elif self.repeatable[407][1]:
-            self.lowerDivCredit += 2 * self.repeatable[407][1]
-        if self.lowerDivCredit >= 8:
-            self.lowerDivCredit = 8
-
-        for i in self.electives:
-            courseLevel = (i // 100)
-            if (self.electives[i][1]) and (courseLevel == 4):
-                self.upperDivCredit += 4
-            elif (self.electives[i][1]) and (courseLevel == 3):
-                self.lowerDivCredit += 4
-
-                if self.lowerDivCredit >= 8:
-                    self.lowerDivCredit = 8
-
-        self.totalCreditSum += (self.lowerDivCredit + self.upperDivCredit)
-
-        print(f'Lower Division Elective Credits Earned:{self.lowerDivCredit}')
-        print(f'Upper Division Elective Credits Earned: {self.upperDivCredit}')
-        print(f'Total Elective Credits Earned: {self.totalCreditSum}')
-
-        if (self.lowerDivCredit + self.upperDivCredit) >= 20:
-            self.requirementList[-1]  = True
-            print('All elective requirements satisfied.')
 
 
     def degreeCompletion(self):
@@ -201,37 +168,55 @@ class Student:
             print("\nCongratulations! You have successfully satisfied all CIS degree requirements!\n")
 
 
-    def A(self):
-        ComputationalScience = {423 : 1 , 413: 2, 420: 2, 427: 2, 455: 2, 461: 2}
-        print('A')
+    def A(self, electiveClasses):
+        a = electiveClasses['end']
 
-    def B(self):
-        ComputerNetworks = {432 : 1, 413 : 2, 429 : 2, 433 : 2, 445 : 2, 473 : 2}
-        print('B')
+        num = 0
+        for i in self.electives:
+            if self.electives[i][1] == 1:
+                if i in electiveClasses:
+                    num += electiveClasses[i]
+                    self.upperDivCredit +=4
+                else:
+                    self.lowerDivCredit +=4
+                    if self.lowerDivCredit >= 8:
+                        self.lowerDivCredit = 8
 
-    def C(self):
-        ComputerSecurity = {433 : 1, 432 : 2, 472 : 2, 490 : 2}
-        print('C')
+        if (num % 2 == a) and (self.upperDivCredit + self.lowerDivCredit) >=20:
+            self.requirementList[-1] = True
+            print("all electives completed")
+        print('lower: ' + str(self.lowerDivCredit))
+        print('upper: ' + str(self.upperDivCredit))
 
-    def D(self):
-        # Foundations {any,any,any}
-        print('D')
 
-    def E(self):
-        SoftwareDevelopment = {423 : 1, 413 : 2, 420 : 2, 427 : 2, 455 : 2, 461 : 2}
-        print('E')
+    def repeatableElectives(self):
+
+        for i in self.repeatable:
+            if (i == 410):
+                print('???' + str(self.repeatable[410][1]))
+                self.lowerDivCredit += (4* self.repeatable[410][1])
+
+            elif i == 399:
+                self.lowerDivCredit += (4* self.repeatable[399][1])
+            elif i == 407:
+                self.lowerDivCredit += (2 * self.repeatable[407][1])
+            if self.lowerDivCredit >= 8:
+                self.lowerDivCredit = 8
+
 
     def Concentration(self):
 
         switch = {
-            'Computational Science': self.A,
-            'Computer Networks' : self.B,
-            'Computer Security' : self.C,
-            'Foundations' : self.D,
-            'Software Development' : self.E
+            'Computational Science': {455 : 1 , 443: 2, 445: 2, 451: 2, 452: 2, 453: 2, 454 : 2, 471 : 2, 'end':1},
+            'Computer Networks' : {432 : 1, 413 : 2, 429 : 2, 433 : 2, 445 : 2, 473 : 2, 'end': 1},
+            'Computer Security' :  {433 : 1, 432 : 2, 472 : 2, 490 : 2, 'end' : 1},
+            'Foundations' : {413 : 2, 420 : 2, 427 : 2, 429 : 2, 431 : 2, 432 : 2, 433 : 2, 434 : 2, 436 : 2,
+                             443 : 2, 445 : 2, 451 : 2, 452 : 2, 453 : 2, 454 : 2, 455 : 2, 461 : 2, 471 : 2,
+                             472 : 2, 473 : 2, 490 : 2, 'end' : 0},
+            'Software Development' : {423 : 1, 413 : 2, 420 : 2, 427 : 2, 455 : 2, 461 : 2, 'end' : 1}
         }
-
-        switch.get(self.concentration)()
+        self.repeatableElectives()
+        self.A(switch.get(self.concentration))
 
 
     def prereqs(self):

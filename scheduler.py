@@ -56,7 +56,6 @@ def main():
 
     name, grade, concentration = initialInfo()
     stud = Student(name, grade, concentration)
-    stud.Concentration()
 
     stud.addClasses(LowerDiv)
 
@@ -67,7 +66,8 @@ def main():
 
     stud.addClasses(Elective)
     stud.refactorClasses()
-    stud.DegreeProgressElectives()
+    stud.Concentration()
+
 
     stud.degreeCompletion()
 
