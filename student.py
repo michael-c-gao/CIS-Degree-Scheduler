@@ -165,10 +165,10 @@ class Student:
         setlist = set(self.requirementList)
         setLength = len(setlist)
         if setLength == 1 and setlist.pop() is True:
-            print("\nCongratulations! You have successfully satisfied all CIS degree requirements!\n")
+            print(f"\nCongratulations, {self.name}! You have successfully satisfied all CIS degree requirements!\n")
 
 
-    def A(self, electiveClasses):
+    def DegreeProgressElectives(self, electiveClasses):
         a = electiveClasses['end']
 
         num = 0
@@ -176,9 +176,9 @@ class Student:
             if self.electives[i][1] == 1:
                 if i in electiveClasses:
                     num += electiveClasses[i]
-                    self.upperDivCredit +=4
+                    self.upperDivCredit += 4
                 else:
-                    self.lowerDivCredit +=4
+                    self.lowerDivCredit += 4
                     if self.lowerDivCredit >= 8:
                         self.lowerDivCredit = 8
 
@@ -193,8 +193,11 @@ class Student:
 
         for i in self.repeatable:
             if (i == 410):
-                print('???' + str(self.repeatable[410][1]))
-                self.lowerDivCredit += (4* self.repeatable[410][1])
+                # print('???' + str(self.repeatable[410][1]))
+                if self.concentration == 'Foundations':
+                    self.upperDivCredit += (4 * self.repeatable[410][1])
+                else:
+                    self.lowerDivCredit += (4* self.repeatable[410][1])
 
             elif i == 399:
                 self.lowerDivCredit += (4* self.repeatable[399][1])
@@ -216,7 +219,7 @@ class Student:
             'Software Development' : {423 : 1, 413 : 2, 420 : 2, 427 : 2, 455 : 2, 461 : 2, 'end' : 1}
         }
         self.repeatableElectives()
-        self.A(switch.get(self.concentration))
+        self.DegreeProgressElectives(switch.get(self.concentration))
 
 
     def prereqs(self):
