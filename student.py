@@ -74,6 +74,8 @@ class Student:
 
         self.array2 = [{}, {}, self.repeatable]
 
+        self.number = 0
+
 
     def addClasses(self, index):
 
@@ -94,10 +96,10 @@ class Student:
 
         while True:
 
-            userInput = input("Course: ")
+            userInput = input('Course: ')
 
             if userInput == 'Done':
-                confirmation = input("Are you sure? Enter 'y' to confirm you have finished adding classes : ")
+                confirmation = input('Are you sure? Enter y to confirm you have finished adding classes : ')
                 if confirmation == 'y':
                     break
 
@@ -118,7 +120,7 @@ class Student:
 
             except ValueError:
                 if userInput != 'Done':
-                    print("Not a valid course number!")
+                    print('Not a valid course number!')
 
 
     def DegreeProgressCore(self, index):
@@ -129,10 +131,10 @@ class Student:
             return
 
         if index != 1:
-            print(f'You have not completed all the required {self.arrayNames[index]} courses yet.')
-            print("Your remaining required Core classes are:")
-
+            print(f'You have not completed all the required Core courses yet.')
             self.missingClassRequirements(0)
+
+
             self.missingClassRequirements(1)
 
 
@@ -141,11 +143,14 @@ class Student:
 
     def missingClassRequirements(self, index):
 
+        print(f'Your remaining required {self.arrayNames[index]} classes are:')
+
         if self.requirementList[index]:
             return
         for i in self.array[index]:
             if self.array[index][i][1] == 0:
                 print(f'|{i}| {self.array[index][i][0]}')
+        print('\n')
 
 
     def refactorClasses(self):
@@ -165,26 +170,67 @@ class Student:
         setlist = set(self.requirementList)
         setLength = len(setlist)
         if setLength == 1 and setlist.pop() is True:
-            print(f"\nCongratulations, {self.name}! You have successfully satisfied all CIS degree requirements!\n")
+            print(f'\nCongratulations, {self.name}! You have successfully satisfied all CIS degree requirements!\n')
+            return
+        print(f'{self.name}, it appears you have not completed all degree requirements.\n')
+        array = [0, self.missingClassRequirements, self.missingElectiveRequirements]
+
+        for index, value in enumerate(self.requirementList):
+            if not value:
+                print(f'You have not completed the {self.arrayNames[index]} requirements.')
+                array[index](index)
+
+
+    def missingElectiveRequirements(self,s):
+
+        switchDictionary = self.switch()
+        numClass = int(self.totalCreditSum/4) if (self.totalCreditSum % 4) == 0 else self.totalCreditSum/4
+
+        switchDictionary.popitem()
+        untakenClasses = ['CIS ' + str(key) + ' ' + self.electives[key][0] for key in switchDictionary
+                          if self.electives[key][1] != 1 and key in switchDictionary]
+
+        classesLeft = 5 - numClass
+        creditsLeft = 20 - self.totalCreditSum
+        upperLeft = 3 - int(self.upperDivCredit/4)
+
+        requiredClass = next(iter(switchDictionary ))
+
+        print(f'You currently have completed {self.totalCreditSum} elective credits '
+              f'({self.upperDivCredit } upper division credits, {self.lowerDivCredit} lower division credits) '
+              f'for a total of {numClass} classes. You need {creditsLeft} more elective credits (i.e. {classesLeft} '
+              f'classes) to satisfy the 20 credit Requirement for electives.')
+
+        if (self.number % 2) != 1 and self.concentration != 'Foundations':
+            print(f'You are missing the required class for your concentration - CIS {requiredClass} : '
+                  f'{self.electives[requiredClass][0]} to satisfy the Primary Course Requirement.')
+
+        if self.upperDivCredit < 12:
+            bb = ', '.join(untakenClasses)
+            print(f'Your current concentration, {self.concentration}, requires you to pick at least {upperLeft} '
+                  f'more classes from {bb} to satisfy all upper division elective requirements.')
+
 
 
     def DegreeProgressElectives(self, electiveClasses):
+
         a = electiveClasses['end']
 
-        num = 0
         for i in self.electives:
             if self.electives[i][1] == 1:
                 if i in electiveClasses:
-                    num += electiveClasses[i]
+                    self.number += electiveClasses[i]
                     self.upperDivCredit += 4
                 else:
                     self.lowerDivCredit += 4
                     if self.lowerDivCredit >= 8:
                         self.lowerDivCredit = 8
 
-        if (num % 2 == a) and (self.upperDivCredit + self.lowerDivCredit) >=20:
+        self.totalCreditSum = self.lowerDivCredit + self.upperDivCredit
+
+        if (self.number % 2 == a) and (self.upperDivCredit + self.lowerDivCredit) >=20:
             self.requirementList[-1] = True
-            print("all electives completed")
+            print('all electives completed')
         print('lower: ' + str(self.lowerDivCredit))
         print('upper: ' + str(self.upperDivCredit))
 
@@ -193,7 +239,6 @@ class Student:
 
         for i in self.repeatable:
             if (i == 410):
-                # print('???' + str(self.repeatable[410][1]))
                 if self.concentration == 'Foundations':
                     self.upperDivCredit += (4 * self.repeatable[410][1])
                 else:
@@ -206,21 +251,29 @@ class Student:
             if self.lowerDivCredit >= 8:
                 self.lowerDivCredit = 8
 
+    def switch(self):
+        switchStatement = {
+            'Computational Science': {455: 1, 443: 2, 445: 2, 451: 2, 452: 2, 453: 2, 454: 2, 471: 2, 'end': 1},
+            'Computer Networks': {432: 1, 413: 2, 429: 2, 433: 2, 445: 2, 473: 2, 'end': 1},
+            'Computer Security': {433: 1, 432: 2, 472: 2, 490: 2, 'end': 1},
+            'Foundations': {413: 2, 420: 2, 427: 2, 429: 2, 431: 2, 432: 2, 433: 2, 434: 2, 436: 2,
+                            443: 2, 445: 2, 451: 2, 452: 2, 453: 2, 454: 2, 455: 2, 461: 2, 471: 2,
+                            472: 2, 473: 2, 490: 2, 'end': 0},
+            'Software Development': {423: 1, 413: 2, 420: 2, 427: 2, 455: 2, 461: 2, 'end': 1}
+        }
+        return switchStatement.get(self.concentration)
+
 
     def Concentration(self):
 
-        switch = {
-            'Computational Science': {455 : 1 , 443: 2, 445: 2, 451: 2, 452: 2, 453: 2, 454 : 2, 471 : 2, 'end':1},
-            'Computer Networks' : {432 : 1, 413 : 2, 429 : 2, 433 : 2, 445 : 2, 473 : 2, 'end': 1},
-            'Computer Security' :  {433 : 1, 432 : 2, 472 : 2, 490 : 2, 'end' : 1},
-            'Foundations' : {413 : 2, 420 : 2, 427 : 2, 429 : 2, 431 : 2, 432 : 2, 433 : 2, 434 : 2, 436 : 2,
-                             443 : 2, 445 : 2, 451 : 2, 452 : 2, 453 : 2, 454 : 2, 455 : 2, 461 : 2, 471 : 2,
-                             472 : 2, 473 : 2, 490 : 2, 'end' : 0},
-            'Software Development' : {423 : 1, 413 : 2, 420 : 2, 427 : 2, 455 : 2, 461 : 2, 'end' : 1}
-        }
+        switchDictionary = self.switch()
         self.repeatableElectives()
-        self.DegreeProgressElectives(switch.get(self.concentration))
+        self.DegreeProgressElectives(switchDictionary)
 
 
     def prereqs(self):
+        pass
+
+
+    def addMathClasses(self, index):
         pass
