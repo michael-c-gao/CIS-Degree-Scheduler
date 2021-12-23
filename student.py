@@ -105,11 +105,17 @@ class Student:
 
             try:
                 courseNum = int(userInput)
+                a = self.prereqs(courseNum, index)
+                if a:
+                    continue
+
                 if courseNum in self.array[index] and self.array[index][courseNum][1] == 0:
                     self.array[index][courseNum][1] += 1
+                    print('Course added successfully')
 
                 elif courseNum in self.array2[index]:
                     self.array2[index][courseNum][1] += 1
+                    print('Course added successfully')
 
 
                 elif courseNum not in self.array[index]:
@@ -117,6 +123,7 @@ class Student:
 
                 else:
                     print('You have already added this course!')
+                print(self.array[index])
 
             except ValueError:
                 if userInput != 'Done':
@@ -271,9 +278,48 @@ class Student:
         self.DegreeProgressElectives(switchDictionary)
 
 
-    def prereqs(self):
-        pass
+    def prereqs(self, course, index):
 
+        prereq = {211: [210],
+                  212: [211],
+                  313: [212],
+                  314: [212],
+                  315: [313],
+                  330: [314],
+                  415: [313, 330],
+                  425: [315],
+                  413: [315],
+                  420: [315],
+                  422: [313],
+                  423: [422],
+                  431: [330],
+                  432: [330],
+                  433: [415],
+                  434: [432, 433],
+                  436: [330],
+                  443: [313],
+                  451: [313, 314],
+                  461: [314, 425],
+                  471: [315],
+                  472: [315]
+                  }
+        try:
+            preq1 = prereq[course][0]
+            preq2 = prereq[course][-1]
+            #print(preq1, preq2)
+            #print(self.array[index][preq1][1])
+            #print(self.array[index][preq2][1])
+            if preq1 != preq2:
 
-    def addMathClasses(self, index):
-        pass
+                if self.array[index][preq1][1] != 1 or self.array[index][preq2][1] != 1:
+                    print("Not all prerequisites have been satisfied")
+                    return True
+
+            elif self.array[index][preq1][1] != 1:
+
+                print("Not all prerequisites have been satisfied")
+                return True
+        except:
+            print("This class has no prereqs")
+            return False
+
