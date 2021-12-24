@@ -1,7 +1,7 @@
 import sys
 
-class Student:
 
+class Student:
 
     def __init__(self, _name='John', _grade=1, _concentration='Foundations'):
 
@@ -15,51 +15,50 @@ class Student:
 
         self.upperDivCredit = 0
 
-        self.totalCreditSum = 0
-
         self.requirementList = [False, False, False]
 
         self.lowerDiv = {
-            210 : ['Computer Science I', 0],
-            211 : ['Computer Science II', 0],
-            212 : ['Computer Science III', 0]
+            210: ['Computer Science I', 0],
+            211: ['Computer Science II', 0],
+            212: ['Computer Science III', 0]
         }
 
         self.upperDiv = {
-            313 : ['Intermediate Data Structures', 0],
-            314 : ['Computer Organization', 0],
-            315 : ['Intermediate Algorithms', 0],
-            330 : ['C/C++ and Unix', 0],
-            415 : ['Operating Systems', 0],
-            422 : ['Software Methodology I', 0],
-            425 : ['Principles of Programming Languages', 0]
+            313: ['Intermediate Data Structures', 0],
+            314: ['Computer Organization', 0],
+            315: ['Intermediate Algorithms', 0],
+            330: ['C/C++ and Unix', 0],
+            415: ['Operating Systems', 0],
+            422: ['Software Methodology I', 0],
+            425: ['Principles of Programming Languages', 0]
         }
 
         self.electives = {
-            322 : ['Introduction to Software Engineering', 0],
-            333 : ['Applied Cryptography', 0],
-            372 : ['Machine Learning for Data Science', 0],
-            413 : ['Advanced Data Structures', 0],
-            420 : ['Automata Theory', 0], 423 : ['Software Methodologies II', 0],
-            427 : ['Introduction to Logic', 0],
-            429 : ['Computer Architecture', 0],
-            431 : ['Introduction to Parallel Computing', 0],
-            432 : ['Intro to Computer Networks', 0],
-            433 : ['Computer & Network Security', 0],
-            434 : ['Computer and Network Security II', 0],
-            436 : ['Secure Software Development', 0],
-            443 : ['User Interfaces', 0],
-            445 : ['Modeling and Simulation',0],
-            451 : ['Database Processing', 0],
-            452 : ['Database Issues', 0],
-            453 : ['Data Mining', 0],
-            454 : ['Bioinformatics', 0],
-            455 : ['Computational Science', 0],
-            461 : ['Introduction to Compilers', 0],
-            471 : ['Introduction to Artificial Intelligence', 0],
-            472 : ['Machine Learning', 0],
-            473 : ['Probabilistic Methods', 0],
-            490 : ['Computer Ethics', 0],
+            322: ['Introduction to Software Engineering', 0],
+            333: ['Applied Cryptography', 0],
+            372: ['Machine Learning for Data Science', 0],
+            413: ['Advanced Data Structures', 0],
+            420: ['Automata Theory', 0],
+            423: ['Software Methodologies II', 0],
+            427: ['Introduction to Logic', 0],
+            429: ['Computer Architecture', 0],
+            431: ['Introduction to Parallel Computing', 0],
+            432: ['Intro to Computer Networks', 0],
+            433: ['Computer & Network Security', 0],
+            434: ['Computer and Network Security II', 0],
+            436: ['Secure Software Development', 0],
+            443: ['User Interfaces', 0],
+            445: ['Modeling and Simulation', 0],
+            451: ['Database Processing', 0],
+            452: ['Database Issues', 0],
+            453: ['Data Mining', 0],
+            454: ['Bioinformatics', 0],
+            455: ['Computational Science', 0],
+            461: ['Introduction to Compilers', 0],
+            471: ['Introduction to Artificial Intelligence', 0],
+            472: ['Machine Learning', 0],
+            473: ['Probabilistic Methods', 0],
+            490: ['Computer Ethics', 0],
         }
 
         self.repeatable = {
@@ -68,30 +67,29 @@ class Student:
             410: ['Various Upper Division Electives', 0]
         }
 
-        self.array = [self.lowerDiv, self.upperDiv, self.electives]
-
-        self.arrayNames = ['Lower Division', 'Upper Division', 'Electives']
-
-        self.array2 = [{}, {}, self.repeatable]
-
         self.number = 0
 
+    def getValues(self, index):
+        array = [self.lowerDiv, self.upperDiv, self.electives]
+        array2 = [{}, {}, self.repeatable]
+        arrayNames = ['Lower Division', 'Upper Division', 'Electives']
+        return array[index], array2[index], arrayNames[index]
 
     def addClasses(self, index):
-
+        array, array2, arrayNames = self.getValues(index)
         print('----------------------------------------------------------------------------------------------')
-        print(f'\nAll possible {self.arrayNames[index]} CIS courses:')
+        print(f'\nAll possible {arrayNames} CIS courses:')
         print('_____________________________________________')
 
-        for i in self.array[index]:
-            print(f'|{i}| {self.array[index][i][0]}')
+        for i in array:
+            print(f'|{i}| {array[i][0]}')
 
-        if self.array2[index]:
-            for i in self.array2[index]:
-                print(f'|{i}| {self.array2[index][i][0]}')
+        if array2:
+            for i in array2:
+                print(f'|{i}| {array2[i][0]}')
 
         print('_____________________________________________\n')
-        print(f'Please enter all the  {self.arrayNames[index]} CIS courses you have taken (i.e. Enter 415 for CIS 415).')
+        print(f'Please enter all the  {arrayNames} CIS courses you have taken (i.e. Enter 415 for CIS 415).')
         print(f'Once you have finished entering classes, enter Done to progress.\n')
 
         while True:
@@ -109,59 +107,53 @@ class Student:
                 if a:
                     continue
 
-                if courseNum in self.array[index] and self.array[index][courseNum][1] == 0:
-                    self.array[index][courseNum][1] += 1
+                if courseNum in array and array[courseNum][1] == 0:
+                    array[courseNum][1] += 1
                     print('Course added successfully')
 
-                elif courseNum in self.array2[index]:
-                    self.array2[index][courseNum][1] += 1
+                elif courseNum in array2:
+                    array2[courseNum][1] += 1
                     print('Course added successfully')
 
-
-                elif courseNum not in self.array[index]:
+                elif courseNum not in array:
                     print('This course does not exist!')
 
                 else:
                     print('You have already added this course!')
-                print(self.array[index])
 
             except ValueError:
                 if userInput != 'Done':
                     print('Not a valid course number!')
 
-
     def DegreeProgressCore(self, index):
+        array, array2, arrayNames = self.getValues(index)
 
-        if all(value[1] == 1 for value in self.array[index].values()):
+        if all(value[1] == 1 for value in array.values()):
             self.requirementList[index] = True
-            print(f'{self.arrayNames[index]} courses completed')
+            print(f'{arrayNames} courses completed')
             return
 
         if index != 1:
-            print(f'You have not completed all the required Core courses yet.')
+            print('You have not completed all the required Core courses yet.')
             self.missingClassRequirements(0)
-
 
             self.missingClassRequirements(1)
 
-
             sys.exit()
 
-
     def missingClassRequirements(self, index):
+        array, array2, arrayNames = self.getValues(index)
 
-        print(f'Your remaining required {self.arrayNames[index]} classes are:')
+        print(f'Your remaining required {arrayNames} classes are:')
 
         if self.requirementList[index]:
             return
-        for i in self.array[index]:
-            if self.array[index][i][1] == 0:
-                print(f'|{i}| {self.array[index][i][0]}')
+        for i in array:
+            if array[i][1] == 0:
+                print(f'|{i}| {array[i][0]}')
         print('\n')
 
-
     def refactorClasses(self):
-
         for i in self.repeatable:
 
             if (self.repeatable[i][1] > 2) and (i != 410):
@@ -171,40 +163,39 @@ class Student:
                     f'The excess {self.repeatable[i][1] - 2} courses will not count toward degree requirements.\n')
                 self.repeatable[i][1] = 2
 
-
     def degreeCompletion(self):
-
         setlist = set(self.requirementList)
         setLength = len(setlist)
         if setLength == 1 and setlist.pop() is True:
             print(f'\nCongratulations, {self.name}! You have successfully satisfied all CIS degree requirements!\n')
             return
+
         print(f'{self.name}, it appears you have not completed all degree requirements.\n')
         array = [0, self.missingClassRequirements, self.missingElectiveRequirements]
 
         for index, value in enumerate(self.requirementList):
+            a, b, arrayNames = self.getValues(index)
             if not value:
-                print(f'You have not completed the {self.arrayNames[index]} requirements.')
+                print(f'You have not completed the {arrayNames} requirements.')
                 array[index](index)
 
-
-    def missingElectiveRequirements(self,s):
-
+    def missingElectiveRequirements(self, s):
         switchDictionary = self.switch()
-        numClass = int(self.totalCreditSum/4) if (self.totalCreditSum % 4) == 0 else self.totalCreditSum/4
+        totalCreditSum = self.lowerDivCredit + self.upperDivCredit
+        numClass = int(totalCreditSum / 4) if (totalCreditSum % 4) == 0 else totalCreditSum / 4
 
         switchDictionary.popitem()
         untakenClasses = ['CIS ' + str(key) + ' ' + self.electives[key][0] for key in switchDictionary
                           if self.electives[key][1] != 1 and key in switchDictionary]
 
         classesLeft = 5 - numClass
-        creditsLeft = 20 - self.totalCreditSum
-        upperLeft = 3 - int(self.upperDivCredit/4)
+        creditsLeft = 20 - totalCreditSum
+        upperLeft = 3 - int(self.upperDivCredit / 4)
 
-        requiredClass = next(iter(switchDictionary ))
+        requiredClass = next(iter(switchDictionary))
 
-        print(f'You currently have completed {self.totalCreditSum} elective credits '
-              f'({self.upperDivCredit } upper division credits, {self.lowerDivCredit} lower division credits) '
+        print(f'You currently have completed {totalCreditSum} elective credits '
+              f'({self.upperDivCredit} upper division credits, {self.lowerDivCredit} lower division credits) '
               f'for a total of {numClass} classes. You need {creditsLeft} more elective credits (i.e. {classesLeft} '
               f'classes) to satisfy the 20 credit Requirement for electives.')
 
@@ -217,10 +208,7 @@ class Student:
             print(f'Your current concentration, {self.concentration}, requires you to pick at least {upperLeft} '
                   f'more classes from {bb} to satisfy all upper division elective requirements.')
 
-
-
     def DegreeProgressElectives(self, electiveClasses):
-
         a = electiveClasses['end']
 
         for i in self.electives:
@@ -233,26 +221,22 @@ class Student:
                     if self.lowerDivCredit >= 8:
                         self.lowerDivCredit = 8
 
-        self.totalCreditSum = self.lowerDivCredit + self.upperDivCredit
-
-        if (self.number % 2 == a) and (self.upperDivCredit + self.lowerDivCredit) >=20:
+        if (self.number % 2 == a) and (self.upperDivCredit + self.lowerDivCredit) >= 20:
             self.requirementList[-1] = True
             print('all electives completed')
-        print('lower: ' + str(self.lowerDivCredit))
-        print('upper: ' + str(self.upperDivCredit))
-
+        print(f'lower: {self.lowerDivCredit}')
+        print(f'upper: {self.upperDivCredit}')
 
     def repeatableElectives(self):
-
         for i in self.repeatable:
-            if (i == 410):
+            if i == 410:
                 if self.concentration == 'Foundations':
                     self.upperDivCredit += (4 * self.repeatable[410][1])
                 else:
-                    self.lowerDivCredit += (4* self.repeatable[410][1])
+                    self.lowerDivCredit += (4 * self.repeatable[410][1])
 
             elif i == 399:
-                self.lowerDivCredit += (4* self.repeatable[399][1])
+                self.lowerDivCredit += (4 * self.repeatable[399][1])
             elif i == 407:
                 self.lowerDivCredit += (2 * self.repeatable[407][1])
             if self.lowerDivCredit >= 8:
@@ -270,15 +254,13 @@ class Student:
         }
         return switchStatement.get(self.concentration)
 
-
     def Concentration(self):
-
         switchDictionary = self.switch()
         self.repeatableElectives()
         self.DegreeProgressElectives(switchDictionary)
 
-
     def prereqs(self, course, index):
+        array, array2, arrayNames = self.getValues(index)
 
         prereq = {211: [210],
                   212: [211],
@@ -304,22 +286,17 @@ class Student:
                   472: [315]
                   }
         try:
-            preq1 = prereq[course][0]
-            preq2 = prereq[course][-1]
-            #print(preq1, preq2)
-            #print(self.array[index][preq1][1])
-            #print(self.array[index][preq2][1])
-            if preq1 != preq2:
+            prereq1 = prereq[course][0]
+            prereq2 = prereq[course][-1]
 
-                if self.array[index][preq1][1] != 1 or self.array[index][preq2][1] != 1:
-                    print("Not all prerequisites have been satisfied")
-                    return True
+            if array[prereq1][1] != 1 or array[prereq2][1] != 1:
+                print('You are missing the prerequisite courses:', end=' ')
+                if prereq1 != prereq2:
+                    print(f'CIS {prereq2} {array[prereq2][0]},', end=' ')
 
-            elif self.array[index][preq1][1] != 1:
+                print(f'CIS {prereq1} {array[prereq1][0]}')
 
-                print("Not all prerequisites have been satisfied")
                 return True
-        except:
-            print("This class has no prereqs")
-            return False
 
+        except KeyError:
+            return False

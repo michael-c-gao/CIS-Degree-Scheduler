@@ -2,7 +2,7 @@ from student import *
 
 def initialInfo():
 
-    a = {1,2,3,4}
+    a = {1, 2, 3, 4}
     b = {"Computational Science", "Computer Networks", "Computer Security", "Foundations", "Software Development", '1'}
 
     print("Welcome to the CIS Degree Scheduler! This program will show you which classes you need for your major, as "
@@ -29,26 +29,6 @@ def initialInfo():
 
 def main():
 
-
-    prereq = { 315 : {313},
-               330 : {314},
-               415 : {313, 330},
-               425: {315},
-               413 : {315},
-               420 : {315},
-               422 : {313},
-               423 : {422},
-               431 : {330},
-               432 : {330},
-               433 : {415},
-               434 : {432, 433},
-               436 : {330},
-               443 : {313},
-               451 : {313,314},
-               461 : {314, 425},
-               471 : {315},
-               472 : {315}
-               }
 
     LowerDiv = 0
     UpperDiv = 1
