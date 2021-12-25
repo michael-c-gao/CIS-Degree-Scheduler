@@ -15,8 +15,6 @@ class Student:
 
         self.upperDivCredit = 0
 
-        self.requirementList = [False, False, False]
-
         self.lowerDiv = {
             210: ['Computer Science I', 0],
             211: ['Computer Science II', 0],
@@ -67,7 +65,8 @@ class Student:
             410: ['Various Upper Division Electives', 0]
         }
 
-        self.number = 0
+        self.requirementList = [False, False, False]
+
 
     def getValues(self, index):
         array = [self.lowerDiv, self.upperDiv, self.electives]
@@ -103,10 +102,9 @@ class Student:
 
             try:
                 courseNum = int(userInput)
-                a = self.prereqs(courseNum, index)
-                if a:
+                missingPrereqs = self.prereqs(courseNum, index)
+                if missingPrereqs:
                     continue
-
                 if courseNum in array and array[courseNum][1] == 0:
                     array[courseNum][1] += 1
                     print('Course added successfully')
@@ -184,7 +182,7 @@ class Student:
         totalCreditSum = self.lowerDivCredit + self.upperDivCredit
         numClass = int(totalCreditSum / 4) if (totalCreditSum % 4) == 0 else totalCreditSum / 4
 
-        switchDictionary.popitem()
+        # switchDictionary.popitem()
         untakenClasses = ['CIS ' + str(key) + ' ' + self.electives[key][0] for key in switchDictionary
                           if self.electives[key][1] != 1 and key in switchDictionary]
 
@@ -192,14 +190,14 @@ class Student:
         creditsLeft = 20 - totalCreditSum
         upperLeft = 3 - int(self.upperDivCredit / 4)
 
-        requiredClass = next(iter(switchDictionary))
+        requiredClass = switchDictionary[0]
 
         print(f'You currently have completed {totalCreditSum} elective credits '
               f'({self.upperDivCredit} upper division credits, {self.lowerDivCredit} lower division credits) '
               f'for a total of {numClass} classes. You need {creditsLeft} more elective credits (i.e. {classesLeft} '
               f'classes) to satisfy the 20 credit Requirement for electives.')
 
-        if (self.number % 2) != 1 and self.concentration != 'Foundations':
+        if self.electives[requiredClass][1] == 0 and self.concentration != 'Foundations':
             print(f'You are missing the required class for your concentration - CIS {requiredClass} : '
                   f'{self.electives[requiredClass][0]} to satisfy the Primary Course Requirement.')
 
@@ -209,23 +207,23 @@ class Student:
                   f'more classes from {bb} to satisfy all upper division elective requirements.')
 
     def DegreeProgressElectives(self, electiveClasses):
-        a = electiveClasses['end']
+        requiredClass = electiveClasses[0]
 
         for i in self.electives:
             if self.electives[i][1] == 1:
                 if i in electiveClasses:
-                    self.number += electiveClasses[i]
                     self.upperDivCredit += 4
                 else:
                     self.lowerDivCredit += 4
                     if self.lowerDivCredit >= 8:
                         self.lowerDivCredit = 8
+        if (self.upperDivCredit + self.lowerDivCredit) >= 20:
+            if (self.concentration == 'Foundations') or (self.electives[requiredClass][1] == 1):
+                self.requirementList[-1] = True
 
-        if (self.number % 2 == a) and (self.upperDivCredit + self.lowerDivCredit) >= 20:
-            self.requirementList[-1] = True
-            print('all electives completed')
-        print(f'lower: {self.lowerDivCredit}')
-        print(f'upper: {self.upperDivCredit}')
+                print('All elective requirements have been completed.')
+        print(f'Lower Division Electives Completed: {self.lowerDivCredit}')
+        print(f'Upper Division Electives Completed: {self.upperDivCredit}')
 
     def repeatableElectives(self):
         for i in self.repeatable:
@@ -244,13 +242,13 @@ class Student:
 
     def switch(self):
         switchStatement = {
-            'Computational Science': {455: 1, 443: 2, 445: 2, 451: 2, 452: 2, 453: 2, 454: 2, 471: 2, 'end': 1},
-            'Computer Networks': {432: 1, 413: 2, 429: 2, 433: 2, 445: 2, 473: 2, 'end': 1},
-            'Computer Security': {433: 1, 432: 2, 472: 2, 490: 2, 'end': 1},
-            'Foundations': {413: 2, 420: 2, 427: 2, 429: 2, 431: 2, 432: 2, 433: 2, 434: 2, 436: 2,
-                            443: 2, 445: 2, 451: 2, 452: 2, 453: 2, 454: 2, 455: 2, 461: 2, 471: 2,
-                            472: 2, 473: 2, 490: 2, 'end': 0},
-            'Software Development': {423: 1, 413: 2, 420: 2, 427: 2, 455: 2, 461: 2, 'end': 1}
+            'Computational Science': [455, 443, 445, 451, 452, 453, 454, 471],
+            'Computer Networks':     [432, 413, 429, 433, 445, 473],
+            'Computer Security':     [433, 432, 472, 490],
+            'Foundations':           [413, 420, 427, 429, 431, 432, 433, 434, 436,
+                                      443, 445, 451, 452, 453, 454, 455, 461, 471,
+                                      472, 473, 490],
+            'Software Development':  [423, 413, 420, 427, 455, 461]
         }
         return switchStatement.get(self.concentration)
 
@@ -261,6 +259,10 @@ class Student:
 
     def prereqs(self, course, index):
         array, array2, arrayNames = self.getValues(index)
+        if index == 2:
+            newarray, newarray2, newarrayNames = self.getValues(1)
+        missingPrereqs = False
+
 
         prereq = {211: [210],
                   212: [211],
@@ -285,18 +287,31 @@ class Student:
                   471: [315],
                   472: [315]
                   }
+
         try:
             prereq1 = prereq[course][0]
             prereq2 = prereq[course][-1]
 
-            if array[prereq1][1] != 1 or array[prereq2][1] != 1:
-                print('You are missing the prerequisite courses:', end=' ')
-                if prereq1 != prereq2:
-                    print(f'CIS {prereq2} {array[prereq2][0]},', end=' ')
+            if index == 2 and course != 434:
+                missingPrereqs = self.prereqClass(prereq1, prereq2, newarray, course, array)
+            if missingPrereqs:
+                return missingPrereqs
 
-                print(f'CIS {prereq1} {array[prereq1][0]}')
+            if (array[prereq1][1] != 1 or array[prereq2][1] != 1) and course in array:
+                missingPrereqs = self.prereqClass(prereq1, prereq2, array, course, array)
 
-                return True
+            return missingPrereqs
 
         except KeyError:
             return False
+
+    def prereqClass(self, prereq1, prereq2, newarray, course, array):
+        a = False
+        if (newarray[prereq1][1] != 1 or newarray[prereq2][1] != 1) and course in array:
+            print(f'{self.name}, you are missing the prerequisite courses:')
+            if prereq1 != prereq2 and newarray[prereq2][1] != 1:
+                print(f'CIS {prereq2} {newarray[prereq2][0]}')
+            if newarray[prereq1][1] != 1:
+                print(f'CIS {prereq1} {newarray[prereq1][0]}')
+            a = True
+        return a
