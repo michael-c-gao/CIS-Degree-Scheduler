@@ -3,7 +3,7 @@ from student import *
 def initialInfo():
 
     a = {1, 2, 3, 4}
-    b = {"Computational Science", "Computer Networks", "Computer Security", "Foundations", "Software Development", '1'}
+    b = {"Computational Science", "Computer Networks", "Computer Security", "Foundations", "Software Development"}
 
     print("Welcome to the CIS Degree Scheduler! This program will show you which classes you need for your major, as "
           "well as plan out what you should take in the upcoming years.")
@@ -15,8 +15,9 @@ def initialInfo():
             yearNum = int(year)
             if yearNum in a:
                 while True:
-                    Concentration = input("Now please enter your concentration (Computational Science,"
-                    " Computer Networks, Computer Security, Foundations, Software Development): ")
+                    Concentration = input("Now please enter your concentration. If unsure, enter 'Foundations'."
+                                          " (Computational Science, Computer Networks, Computer Security, "
+                                          "Foundations, Software Development): ")
                     if Concentration in b:
                         break
                     print("This is not a valid concentration.")
@@ -26,9 +27,7 @@ def initialInfo():
                 print("Please enter an integer! Enter 1 for FR, 2 for SO, 3 for J, 4 for SR.")
 
 
-
 def main():
-
 
     LowerDiv = 0
     UpperDiv = 1
@@ -46,8 +45,8 @@ def main():
 
     stud.addClasses(Elective)
     stud.refactorClasses()
-    stud.Concentration()
-
+    stud.repeatableElectives()
+    stud.DegreeProgressElectives()
 
     stud.degreeCompletion()
 

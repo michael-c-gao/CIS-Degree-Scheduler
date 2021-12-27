@@ -182,7 +182,6 @@ class Student:
         totalCreditSum = self.lowerDivCredit + self.upperDivCredit
         numClass = int(totalCreditSum / 4) if (totalCreditSum % 4) == 0 else totalCreditSum / 4
 
-        # switchDictionary.popitem()
         untakenClasses = ['CIS ' + str(key) + ' ' + self.electives[key][0] for key in switchDictionary
                           if self.electives[key][1] != 1 and key in switchDictionary]
 
@@ -202,11 +201,12 @@ class Student:
                   f'{self.electives[requiredClass][0]} to satisfy the Primary Course Requirement.')
 
         if self.upperDivCredit < 12:
-            bb = ', '.join(untakenClasses)
+            possibleClasses = ', '.join(untakenClasses)
             print(f'Your current concentration, {self.concentration}, requires you to pick at least {upperLeft} '
-                  f'more classes from {bb} to satisfy all upper division elective requirements.')
+                  f'more classes from {possibleClasses} to satisfy all upper division elective requirements.')
 
-    def DegreeProgressElectives(self, electiveClasses):
+    def DegreeProgressElectives(self):
+        electiveClasses = self.switch()
         requiredClass = electiveClasses[0]
 
         for i in self.electives:
@@ -252,17 +252,11 @@ class Student:
         }
         return switchStatement.get(self.concentration)
 
-    def Concentration(self):
-        switchDictionary = self.switch()
-        self.repeatableElectives()
-        self.DegreeProgressElectives(switchDictionary)
-
     def prereqs(self, course, index):
-        array, array2, arrayNames = self.getValues(index)
+        classes, classesarray, arrayNames = self.getValues(index)
         if index == 2:
-            newarray, newarray2, newarrayNames = self.getValues(1)
+            CoreClasses, CoreClassesarray, corearrayNames = self.getValues(1)
         missingPrereqs = False
-
 
         prereq = {211: [210],
                   212: [211],
@@ -293,12 +287,11 @@ class Student:
             prereq2 = prereq[course][-1]
 
             if index == 2 and course != 434:
-                missingPrereqs = self.prereqClass(prereq1, prereq2, newarray, course, array)
+                missingPrereqs = self.prereqClass(prereq1, prereq2, CoreClasses, course, classes)
             if missingPrereqs:
                 return missingPrereqs
 
-            if (array[prereq1][1] != 1 or array[prereq2][1] != 1) and course in array:
-                missingPrereqs = self.prereqClass(prereq1, prereq2, array, course, array)
+            missingPrereqs = self.prereqClass(prereq1, prereq2, classes, course, classes)
 
             return missingPrereqs
 
@@ -306,12 +299,12 @@ class Student:
             return False
 
     def prereqClass(self, prereq1, prereq2, newarray, course, array):
-        a = False
+        prereq = False
         if (newarray[prereq1][1] != 1 or newarray[prereq2][1] != 1) and course in array:
             print(f'{self.name}, you are missing the prerequisite courses:')
             if prereq1 != prereq2 and newarray[prereq2][1] != 1:
                 print(f'CIS {prereq2} {newarray[prereq2][0]}')
             if newarray[prereq1][1] != 1:
                 print(f'CIS {prereq1} {newarray[prereq1][0]}')
-            a = True
-        return a
+            prereq = True
+        return prereq
